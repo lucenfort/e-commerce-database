@@ -1,163 +1,78 @@
--- Criação do banco de dados
-CREATE DATABASE e_commerce;
-
--- Seleção do banco de dados
 USE e_commerce;
 
--- Criação da tabela `cliente_pf`
-CREATE TABLE cliente_pf (
-  id INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(255) NOT NULL,
-  cpf VARCHAR(11) NOT NULL,
-  rg VARCHAR(12) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  senha VARCHAR(255) NOT NULL,
-  data_nascimento DATE NOT NULL,
-  tipo ENUM('Pessoa Física', 'Pessoa Jurídica') NOT NULL,
-  PRIMARY KEY (id)
-);
+-- Inserção de dados na tabela cliente_pf
 
--- Criação da tabela `cliente_pj`
-CREATE TABLE cliente_pj (
-  id INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(255) NOT NULL,
-  cnpj VARCHAR(14) NOT NULL,
-  inscricao_estadual VARCHAR(14) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  senha VARCHAR(255) NOT NULL,
-  data_fundacao DATE NOT NULL,
-  PRIMARY KEY (id)
-);
+INSERT INTO cliente_pf (nome, cpf, email, data_nascimento)
+VALUES
+  ('João da Silva', '123.456.789-00', 'joao.silva@email.com', '1990-01-01'),
+  ('Maria da Silva', '987.654.321-00', 'maria.silva@email.com', '1991-02-02'),
+  ('José da Silva', '098.765.432-10', 'jose.silva@email.com', '1992-03-03');
 
--- Criação da tabela `endereco`
-CREATE TABLE endereco (
-  id INT NOT NULL AUTO_INCREMENT,
-  cep VARCHAR(9) NOT NULL,
-  logradouro VARCHAR(255) NOT NULL,
-  numero VARCHAR(10) NOT NULL,
-  complemento VARCHAR(255) NOT NULL,
-  bairro VARCHAR(255) NOT NULL,
-  cidade VARCHAR(255) NOT NULL,
-  estado VARCHAR(2) NOT NULL,
-  pais VARCHAR(2) NOT NULL,
-  PRIMARY KEY (id)
-);
+-- Inserção de dados na tabela cliente_pj
 
--- Criação da tabela `fornecedor`
-CREATE TABLE fornecedor (
-  id INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(255) NOT NULL,
-  cnpj VARCHAR(14) NOT NULL,
-  inscricao_estadual VARCHAR(14) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  senha VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id)
-);
+INSERT INTO cliente_pj (razao_social, cnpj, inscricao_estadual, email)
+VALUES
+  ('Empresa A', '12.345.678/9001-23', '123.456.789.000', 'empresaa@email.com'),
+  ('Empresa B', '98.765.432/1002-34', '987.654.321.000', 'empresab@email.com'),
+  ('Empresa C', '098.765.432/1003-45', '098.765.432.100', 'empresac@email.com');
 
--- Criação da tabela `produto`
-CREATE TABLE produto (
-  id INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(255) NOT NULL,
-  descricao TEXT NOT NULL,
-  preco DECIMAL(10,2) NOT NULL,
-  quantidade_estoque INT NOT NULL,
-  fornecedor_id INT NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (fornecedor_id) REFERENCES fornecedor (id)
-);
+-- Inserção de dados na tabela endereco
 
--- Criação da tabela `estoque`
-CREATE TABLE estoque (
-  id INT NOT NULL AUTO_INCREMENT,
-  produto_id INT NOT NULL,
-  quantidade INT NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (produto_id) REFERENCES produto (id)
-);
+INSERT INTO endereco (cliente_id, cep, logradouro, numero, complemento, bairro, cidade, estado)
+VALUES
+  (1, '12345-678', 'Rua da Paz', '10', NULL, 'Bairro da Paz', 'Cidade da Paz', 'SP'),
+  (2, '98765-432', 'Rua da Felicidade', '20', 'Apto. 200', 'Bairro da Felicidade', 'Cidade da Felicidade', 'RJ'),
+  (3, '09876-543', 'Rua da Alegria', '30', NULL, 'Bairro da Alegria', 'Cidade da Alegria', 'MG');
 
--- Criação da tabela `pedido`
-CREATE TABLE pedido (
-  id INT NOT NULL AUTO_INCREMENT,
-  cliente_id INT NOT NULL,
-  data_criacao DATETIME NOT NULL,
-  data_entrega DATETIME NOT NULL,
-  status ENUM('Aguardando Pagamento', 'Pagamento Aprovado', 'Pedido Enviado', 'Entregue', 'Cancelado') NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (cliente_id) REFERENCES cliente_pf (id)
-);
+-- Inserção de dados na tabela fornecedor
 
--- Criação da tabela `item_pedido`
-CREATE TABLE item_pedido (
-  id INT NOT NULL AUTO_INCREMENT,
-  pedido_id INT NOT NULL,
-  produto_id INT NOT NULL,
-  quantidade INT NOT NULL,
-  preco DECIMAL(10,2) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (pedido_id) REFERENCES pedido (id),
-  FOREIGN KEY (produto_id) REFERENCES produto (id)
-);
+INSERT INTO fornecedor (nome, cnpj, inscricao_estadual, email)
+VALUES
+  ('Fornecedor A', '12.345.678/9001-23', '123.456.789.000', 'fornecedora@email.com'),
+  ('Fornecedor B', '98.765.432/1002-34', '987.654.321.000', 'fornecedorb@email.com'),
+  ('Fornecedor C', '098.765.432/1003-45', '098.765.432.100', 'fornecedorc@email.com');
 
--- Criação da tabela `pagamento`
-CREATE TABLE pagamento (
-  id INT NOT NULL AUTO_INCREMENT,
-  pedido_id INT NOT NULL,
-  data_pagamento DATETIME NOT NULL,
-  forma_pagamento ENUM('Cartão de Crédito', 'Cartão de Débito', 'Boleto Bancário', 'Transferência Bancária') NOT NULL
+-- Inserção de dados na tabela produto
 
-);
+INSERT INTO produto (nome, descricao, preco_unitario, quantidade_estoque, fornecedor_id)
+VALUES
+  ('Televisão', 'Televisão de 32 polegadas', 1.000, 10, 1),
+  ('Celular', 'Celular de última geração', 2.000, 20, 2),
+  ('Computador', 'Computador portátil', 3.000, 30, 3);
 
--- Criação da tabela `entrega`
-CREATE TABLE entrega (
-  id INT NOT NULL AUTO_INCREMENT,
-  pedido_id INT NOT NULL,
-  status ENUM('Aguardando Pagamento', 'Pagamento Aprovado', 'Pedido Enviado', 'Entregue', 'Cancelado') NOT NULL,
-  codigo_rastreio VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (pedido_id) REFERENCES pedido (id)
-);
-
--- Alterações nas tabelas
-ALTER TABLE cliente_pf
-ADD COLUMN endereco_id INT;
-
-ALTER TABLE cliente_pf
-ADD FOREIGN KEY (endereco_id) REFERENCES endereco (id);
-
--- Constraints
-ALTER TABLE produto
-ADD CONSTRAINT estoque_quantidade_minima CHECK (quantidade_estoque >= 0);
-
-ALTER TABLE pedido
-ADD CONSTRAINT pedido_data_criacao_before_data_entrega CHECK (data_criacao <= data_entrega);
-
--- Incluindo dados de teste
-INSERT INTO cliente_pf (nome, cpf, rg, email, senha, data_nascimento, tipo)
-VALUES ('Fulano da Silva', '123.456.789-00', '12.345.678-9', 'fulano@email.com', '123456', '1990-01-01', 'Pessoa Física');
-
-INSERT INTO cliente_pj (nome, cnpj, inscricao_estadual, email, senha, data_fundacao)
-VALUES ('Empresa XPTO', '12.345.678/0001-00', '123.456.789-00', 'empresa@email.com', '123456', '2023-01-01');
-
-INSERT INTO endereco (cep, logradouro, numero, complemento, bairro, cidade, estado, pais)
-VALUES ('12345-678', 'Rua Principal', '100', 'Apto 101', 'Bairro da Paz', 'Cidade do Sol', 'SP', 'Brasil');
-
-INSERT INTO fornecedor (nome, cnpj, inscricao_estadual, email, senha)
-VALUES ('Fornecedor A', '12.345.678/0002-01', '123.456.789-01', 'fornecedor@email.com', '123456');
-
-INSERT INTO produto (nome, descricao, preco, quantidade_estoque, fornecedor_id)
-VALUES ('Produto A', 'Descrição do produto A', 100.00, 10, 1);
-
+-- Inserção de dados na tabela estoque
 INSERT INTO estoque (produto_id, quantidade)
-VALUES (1, 10);
+VALUES
+  (1, 10),
+  (2, 20),
+  (3, 30);
 
-INSERT INTO pedido (cliente_id, data_criacao, data_entrega, status)
-VALUES (1, '2023-03-08 10:00:00', '2023-03-10 10:00:00', 'Aguardando Pagamento');
+-- Inserção de dados na tabela pedido
 
-INSERT INTO item_pedido (pedido_id, produto_id, quantidade, preco)
-VALUES (1, 1, 1, 100.00);
+INSERT INTO pedido (cliente_id, data_pedido, valor_total, status)
+VALUES
+  (1, '2023-03-08 10:00:00', 1.000, 'Aguardando Pagamento'),
+  (2, '2023-03-09 12:00:00', 2.000, 'Pagamento Aprovado'),
+  (3, '2023-03-10 14:00:00', 3.000, 'Pedido Enviado');
 
-INSERT INTO pagamento (pedido_id, data_pagamento, forma_pagamento)
-VALUES (1, '2023-03-08 12:00:00', 'Cartão de Crédito');
+-- Inserção de dados na tabela item_pedido
+
+INSERT INTO item_pedido (pedido_id, produto_id, quantidade, valor_unitario)
+VALUES
+  (1, 1, 1, 1.000),
+  (2, 2, 1, 2.000),
+  (3, 3, 1, 3.000);
+
+-- Inserção de dados na tabela pagamento
+
+INSERT INTO pagamento (pedido_id, forma_pagamento, data_pagamento)
+VALUES
+  (1, 'Cartão de Crédito', '2023-03-08 12:00:00'),
+  (2, 'Boleto Bancário', '2023-03-09 14:00:00');
+
+-- Inserção de dados na tabela entrega
 
 INSERT INTO entrega (pedido_id, status, codigo_rastreio)
-VALUES (1, 'Pedido Enviado', '1234567890123456');
+VALUES
+  (1, 'Aguardando Pagamento', NULL),
+  (2, 'Pagamento Aprovado', '1234567890123456');
