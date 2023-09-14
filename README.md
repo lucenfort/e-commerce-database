@@ -12,25 +12,16 @@ A tabela pagamento foi alterada para permitir que um pedido tenha mais de uma fo
 A tabela entrega foi adicionada para armazenar informações sobre o status e o código de rastreio das entregas.
 O script SQL para criar o esquema do banco de dados está disponível no arquivo schema.sql. O script cria as seguintes tabelas:
 
-> cliente_pf
-
-> cliente_pj
-
->  endereco
-
-> fornecedor
-
-> produto
-
-> estoque
-
-> pedido
-
-> item_pedido
-
-> pagamento
-
-> entrega
+* cliente_pf
+* cliente_pj
+* endereco
+* fornecedor
+* produto
+* estoque
+* pedido
+* item_pedido
+* pagamento
+* entrega
 
 Os dados para teste foram inseridos no banco de dados usando o script insert_data.sql. O script cria os seguintes registros:
 
